@@ -1,0 +1,32 @@
+{
+    "name": "nahid/presento",
+    "description": "Presento is a package for PHP data presenter",
+    "type": "library",
+    "require": {
+        "php": ">=7.0",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "4.4.x-dev"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nahid Bin Azhar",
+            "email": "nahid.dns@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "files": [
+            "helpers/presento.php"
+        ],
+        "psr-4": {
+            "Nahid\\Presento\\": "src/",
+            "Example\\": "example/"
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    }
+}
