@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Nahid\Presento;
 
@@ -9,23 +9,23 @@ abstract class Presenter
     protected $data = [];
     protected $generatedData = [];
 
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->data = $data;
         $this->generatedData = $this->handle();
     }
 
-    public function __invoke()
+    public function __invoke() : array
     {
         return $this->generatedData;
     }
 
-    public function __toString()
+    public function __toString() : string
     {
         return json_encode($this->generatedData);
     }
 
-    abstract public function present();
+    abstract public function present() : array;
 
     public function transformer()
     {
@@ -46,7 +46,7 @@ abstract class Presenter
         return $this->transform($this->process($this->data));
     }
 
-    public function process($data)
+    public function process(array $data) : array
     {
         $present = $this->present();
         $record = [];
@@ -72,7 +72,7 @@ abstract class Presenter
         return $record;
     }
 
-    protected function transform($data)
+    protected function transform(array $data) : array
     {
         $transformerClass = $this->transformer();
 
@@ -84,12 +84,12 @@ abstract class Presenter
         return $data;
     }
 
-    public function toJson()
+    public function toJson() : string
     {
         return json_encode($this->generatedData);
     }
 
-    public function get()
+    public function get() : array
     {
         return $this->generatedData;
     }
@@ -100,7 +100,7 @@ abstract class Presenter
      * @param array $arr
      * @return bool
      */
-    protected function isCollection($arr)
+    protected function isCollection(array $arr) : bool
     {
         if (!is_array($arr)) {
             return false;
