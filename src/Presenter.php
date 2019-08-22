@@ -27,17 +27,27 @@ abstract class Presenter
 
     abstract public function present() : array;
 
+    /**
+     * get transformer name, this method can be override
+     *
+     * @return null|string
+     */
     public function transformer()
     {
         return null;
     }
 
-    public function handle()
+    /**
+     * handle data based on presented data
+     *
+     * @return array
+     */
+    public function handle() : array
     {
         if ($this->isCollection($this->data)) {
             $generatedData = [];
             foreach ($this->data  as $property => $data) {
-                $generatedData[] = $this->transform($this->process($data));
+                $generatedData[$property] = $this->transform($this->process($data));
             }
 
             return $generatedData;
@@ -46,6 +56,12 @@ abstract class Presenter
         return $this->transform($this->process($this->data));
     }
 
+    /**
+     * process data based presented data model
+     *
+     * @param array $data
+     * @return array
+     */
     public function process(array $data) : array
     {
         $present = $this->present();
@@ -72,6 +88,12 @@ abstract class Presenter
         return $record;
     }
 
+    /**
+     * transform given data based on transformer.
+     *
+     * @param array $data
+     * @return array
+     */
     protected function transform(array $data) : array
     {
         $transformerClass = $this->transformer();
@@ -84,11 +106,21 @@ abstract class Presenter
         return $data;
     }
 
+    /**
+     * get generated data as json string
+     *
+     * @return string
+     */
     public function toJson() : string
     {
         return json_encode($this->generatedData);
     }
 
+    /**
+     * get full set of data as array
+     *
+     * @return array
+     */
     public function get() : array
     {
         return $this->generatedData;
@@ -108,6 +140,4 @@ abstract class Presenter
 
         return isset($arr[0]) && is_array($arr[0]);
     }
-
-
 }

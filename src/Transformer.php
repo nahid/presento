@@ -14,11 +14,16 @@ abstract class Transformer
         $this->transform();
     }
 
-    public function __invoke() : array 
+    public function __invoke() : array
     {
         return $this->getData();
     }
 
+    /**
+     * transform given data with desired methods
+     *
+     * @return void
+     */
     public function transform()
     {
         foreach ($this->data as $key => $value) {
@@ -26,6 +31,12 @@ abstract class Transformer
         }
     }
 
+    /**
+     * check then current property need to be processed
+     *
+     * @param string $property
+     * @return bool
+     */
     protected function isPropertyNeedProcess(string $property) : bool
     {
         $method = $this->getPropertyFunction($property);
@@ -33,11 +44,24 @@ abstract class Transformer
         return method_exists($this, $method);
     }
 
+    /**
+     * get property guessed function name
+     *
+     * @param string $property
+     * @return string
+     */
     protected function getPropertyFunction(string $property) : string
     {
         return 'get'. to_camel_case($property) . 'Property';
     }
 
+    /**
+     * call property function if exists
+     *
+     * @param string $property
+     * @param $value
+     * @return mixed
+     */
     protected function callPropertyFunction(string $property, $value)
     {
         if ($this->isPropertyNeedProcess($property)) {
@@ -47,11 +71,22 @@ abstract class Transformer
         return $value;
     }
 
+    /**
+     * get property value from data
+     *
+     * @param string $property
+     * @return array|mixed|null
+     */
     public function getProperty(string $property)
     {
         return get_from_array($this->data, $property);
     }
 
+    /**
+     * get full set of data
+     *
+     * @return array
+     */
     public function getData() : array
     {
         return $this->generatedData;
