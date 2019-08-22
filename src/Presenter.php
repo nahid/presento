@@ -43,7 +43,7 @@ abstract class Presenter
      */
     public function handle() : array
     {
-        if ($this->isCollection($this->data)) {
+        if (is_collection($this->data)) {
             $generatedData = [];
             foreach ($this->data  as $property => $data) {
                 $generatedData[$property] = $this->transform($this->process($data));
@@ -123,20 +123,5 @@ abstract class Presenter
     public function get() : array
     {
         return $this->generatedData;
-    }
-
-    /**
-     * Check given value is multidimensional array
-     *
-     * @param array $arr
-     * @return bool
-     */
-    protected function isCollection(array $arr) : bool
-    {
-        if (!is_array($arr)) {
-            return false;
-        }
-
-        return isset($arr[0]) && is_array($arr[0]);
     }
 }

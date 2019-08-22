@@ -49,3 +49,20 @@ if (!function_exists('get_from_array')) {
     }
 
 }
+
+if (!function_exists('is_collection')) {
+    /**
+     * Check given value is multidimensional array
+     *
+     * @param array $arr
+     * @return bool
+     */
+    function is_collection(array $arr) : bool
+    {
+        if (!is_array($arr)) {
+            return false;
+        }
+
+        return isset($arr[0]) && is_array($arr[0]);
+    }
+}
