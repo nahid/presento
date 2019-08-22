@@ -5,7 +5,6 @@ namespace Nahid\Presento;
 
 abstract class Presenter
 {
-    protected $aliases = [];
     protected $data = [];
     protected $generatedData = [];
 
