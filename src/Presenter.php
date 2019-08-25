@@ -5,12 +5,18 @@ namespace Nahid\Presento;
 
 abstract class Presenter
 {
+    protected $transformer = null;
     protected $data = [];
     protected $generatedData = [];
 
-    public function __construct(array $data)
+    public function __construct(array $data, string $transformer = null)
     {
         $this->data = $data;
+        $this->transformer = $this->transformer();
+        if (!is_null($transformer)) {
+            $this->transformer = $transformer;
+        }
+
         $this->generatedData = $this->handle();
     }
 
@@ -95,7 +101,7 @@ abstract class Presenter
      */
     protected function transform(array $data) : array
     {
-        $transformerClass = $this->transformer();
+        $transformerClass = $this->transformer;
 
         if (!is_null($transformerClass)) {
             $transformer = new $transformerClass($data);
