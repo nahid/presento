@@ -77,8 +77,12 @@ abstract class Presenter
                 $key = $value;
             }
 
-            if (is_array($value) && count($value) == 2) {
-                $presenter = new $value[1](get_from_array($data, $value[0]));
+            if (is_array($value) && count($value) == 1) {
+                $class = array_keys($value)[0];
+                $params = $value[$class];
+                $arrData = $params[0] ?? '.';
+                $transformer = $params[1] ?? null;
+                $presenter = new $class(get_from_array($data, $arrData), $transformer);
                 $newVal = $value;
                 if ($presenter instanceof Presenter) {
                     $newVal = $presenter->handle();
