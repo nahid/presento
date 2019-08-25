@@ -62,7 +62,9 @@ if (!function_exists('is_collection')) {
         if (!is_array($arr)) {
             return false;
         }
+        $first = reset($arr);
+        //$key = key($first);
 
-        return isset($arr[0]) && is_array($arr[0]);
+        return isset($first) && is_array($first);
     }
 }
