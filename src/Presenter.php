@@ -72,6 +72,10 @@ abstract class Presenter
         $present = $this->present();
         $record = [];
 
+        if (count($present) == 0) {
+            $record = $data;
+        }
+
         foreach ($present as $key => $value) {
             if (is_numeric($key)) {
                 $key = $value;
