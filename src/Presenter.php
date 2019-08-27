@@ -26,7 +26,7 @@ abstract class Presenter
         $this->generatedData = $this->handle();
     }
 
-    public function __invoke() : array
+    public function __invoke()
     {
         return $this->generatedData;
     }
@@ -34,6 +34,19 @@ abstract class Presenter
     public function __toString() : string
     {
         return json_encode($this->generatedData);
+    }
+
+    public function setPresent(array $present)
+    {
+        $this->presentScheme = $present;
+        return $this;
+    }
+
+
+    public function setTransformer(string $transformer)
+    {
+        $this->transformer = $transformer;
+        return $this;
     }
 
     abstract public function present() : array;
@@ -63,13 +76,7 @@ abstract class Presenter
         if (is_collection($this->data)) {
             $generatedData = [];
             foreach ($this->data  as $property => $data) {
-                if (!$this->isBlank($data)) {
-                    $generatedData[$property] = $this->transform($this->process($this->convert($data)));
-                }
-
-                if ($this->isBlank($data)) {
-                    $generatedData[$property] = $this->handleDefault($this->convert($data));
-                }
+                $generatedData[$property] = $this->handleDefault($this->convert($data));
             }
 
             return $generatedData;
@@ -80,12 +87,11 @@ abstract class Presenter
 
     protected function handleDefault($data)
     {
-
-        if (is_null($this->default) || $this->default == '') {
-            return $this->default;
+        if (!$this->isBlank($data)) {
+            return $this->transform($this->process($data));
         }
 
-        if (is_array($this->default) && count($this->default)>0) {
+        if (is_array($this->default) && count($this->default) > 0) {
             $this->presentScheme = $this->default;
             return $this->transform($this->process($data));
         }

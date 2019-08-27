@@ -27,6 +27,10 @@ if (!function_exists('to_camel_case')){
 if (!function_exists('get_from_array')) {
    function get_from_array($map, string $node)
     {
+        if ($map === null) {
+            return $map;
+        }
+
         if (!is_array($map)) {
             return $map;
         }
@@ -34,6 +38,7 @@ if (!function_exists('get_from_array')) {
         if (empty($node)) {
             return $map;
         }
+
         if ($node) {
             $terminate = false;
             $path = explode('.', $node);
