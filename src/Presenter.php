@@ -3,15 +3,21 @@
 namespace Nahid\Presento;
 
 
+use Countable;
+
 abstract class Presenter
 {
     protected $transformer = null;
     protected $data = [];
     protected $generatedData = [];
+    protected $default = null;
+    protected $presentScheme;
 
-    public function __construct(array $data, string $transformer = null)
+    public function __construct($data = null, string $transformer = null)
     {
-        $this->data = $data;
+        $this->presentScheme = $this->present();
+        $this->data = $this->convert($data);
+
         $this->transformer = $this->transformer();
         if (!is_null($transformer)) {
             $this->transformer = $transformer;
@@ -42,23 +48,49 @@ abstract class Presenter
         return null;
     }
 
+    public function convert($data)
+    {
+        return $data;
+    }
+
     /**
      * handle data based on presented data
      *
      * @return array
      */
-    public function handle() : array
+    public function handle()
     {
         if (is_collection($this->data)) {
             $generatedData = [];
             foreach ($this->data  as $property => $data) {
-                $generatedData[$property] = $this->transform($this->process($data));
+                if (!$this->isBlank($data)) {
+                    $generatedData[$property] = $this->transform($this->process($this->convert($data)));
+                }
+
+                if ($this->isBlank($data)) {
+                    $generatedData[$property] = $this->handleDefault($this->convert($data));
+                }
             }
 
             return $generatedData;
         }
 
-        return $this->transform($this->process($this->data));
+        return $this->handleDefault($this->convert($this->data));
+    }
+
+    protected function handleDefault($data)
+    {
+
+        if (is_null($this->default) || $this->default == '') {
+            return $this->default;
+        }
+
+        if (is_array($this->default) && count($this->default)>0) {
+            $this->presentScheme = $this->default;
+            return $this->transform($this->process($data));
+        }
+
+        return $this->default;
     }
 
     /**
@@ -67,9 +99,9 @@ abstract class Presenter
      * @param array $data
      * @return array
      */
-    public function process(array $data) : array
+    public function process($data)
     {
-        $present = $this->present();
+        $present = $this->presentScheme;
         $record = [];
 
         if (count($present) == 0) {
@@ -107,8 +139,12 @@ abstract class Presenter
      * @param array $data
      * @return array
      */
-    protected function transform(array $data) : array
+    protected function transform($data)
     {
+        if (!is_array($data)) {
+            return $data;
+        }
+
         $transformerClass = $this->transformer;
 
         if (!is_null($transformerClass)) {
@@ -137,5 +173,26 @@ abstract class Presenter
     public function get() : array
     {
         return $this->generatedData;
+    }
+
+    public function isBlank($value)
+    {
+        if (is_null($value)) {
+            return true;
+        }
+
+        if (is_string($value)) {
+            return trim($value) === '';
+        }
+
+        if (is_numeric($value) || is_bool($value)) {
+            return false;
+        }
+
+        if ($value instanceof Countable) {
+            return count($value) === 0;
+        }
+
+        return empty($value);
     }
 }

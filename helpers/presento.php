@@ -25,8 +25,12 @@ if (!function_exists('to_camel_case')){
 }
 
 if (!function_exists('get_from_array')) {
-   function get_from_array(array $map, string $node)
+   function get_from_array($map, string $node)
     {
+        if (!is_array($map)) {
+            return $map;
+        }
+
         if (empty($node)) {
             return $map;
         }
@@ -57,7 +61,7 @@ if (!function_exists('is_collection')) {
      * @param array $arr
      * @return bool
      */
-    function is_collection(array $arr) : bool
+    function is_collection($arr) : bool
     {
         if (!is_array($arr)) {
             return false;
