@@ -84,4 +84,28 @@ final class HelpersTest extends TestCase
     {
         $this->assertEquals($expected, get_from_array($data, $path));
     }
+
+    public function blankDataProvider(): array
+    {
+        return [
+            // [ 'actual data', 'expected data' ]
+            [1, false],
+            [true, false],
+            [[], true],
+            [null, true],
+            ["empty", false],
+            ["   ", true],
+        ];
+    }
+
+    /**
+     * @dataProvider blankDataProvider
+     *
+     * @param mixed $data
+     * @param bool $expected
+     */
+    public function testBlankMethod($data, bool $expected): void
+    {
+        $this->assertEquals($expected, blank($data));
+    }
 }
