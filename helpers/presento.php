@@ -1,6 +1,7 @@
 <?php
+declare(strict_types = 1);
 
-if (!function_exists('to_camel_case')){
+if (!function_exists('to_camel_case')) {
     /**
      * Make given text as camelCase
      *
@@ -10,60 +11,49 @@ if (!function_exists('to_camel_case')){
      */
     function to_camel_case(string $string, $delimiter = '_') : string
     {
+        if (empty($string)) return $string;
+
         $words = explode($delimiter, $string);
-        $camelCase = '';
-        $first = true;
-        foreach ($words as $word) {
-            if (!$first) {
-                $camelCase .= ucfirst(strtolower($word));
-            } else {
-                $camelCase .= strtolower($word);
-            }
-        }
-        return $camelCase;
+
+        return join("", array_map(function($word) {
+            return ucfirst(strtolower($word));
+        }, $words));
     }
 }
 
 if (!function_exists('get_from_array')) {
-   function get_from_array($map, string $node)
+    /**
+     * get data from an array traversing by the given 'path'
+     *
+     * @param $map
+     * @param string $node
+     * @return mixed|null
+     */
+    function get_from_array($map, string $node)
     {
-        if ($map === null) {
+        if ($map === null || !is_array($map) || empty($node)) {
             return $map;
         }
 
-        if (!is_array($map)) {
-            return $map;
-        }
+        $path = explode('.', $node);
 
-        if (empty($node)) {
-            return $map;
-        }
-
-        if ($node) {
-            $terminate = false;
-            $path = explode('.', $node);
-            foreach ($path as $val) {
-                if (!array_key_exists($val, $map)) {
-                    $terminate = true;
-                    break;
-                }
-                $map = &$map[$val];
-            }
-            if ($terminate) {
+        foreach ($path as $val) {
+            if (!array_key_exists($val, $map)) {
                 return null;
             }
-            return $map;
-        }
-        return null;
-    }
 
+            $map = &$map[$val];
+        }
+
+        return $map;
+    }
 }
 
 if (!function_exists('is_collection')) {
     /**
      * Check given value is multidimensional array
      *
-     * @param array $arr
+     * @param mixed $arr
      * @return bool
      */
     function is_collection($arr) : bool
@@ -71,9 +61,40 @@ if (!function_exists('is_collection')) {
         if (!is_array($arr)) {
             return false;
         }
+
         $first = reset($arr);
         //$key = key($first);
 
         return isset($first) && is_array($first);
+    }
+}
+
+
+if (!function_exists('blank')) {
+    /**
+     * Check if the given value is null or empty
+     *
+     * @param $value
+     * @return bool
+     */
+    function blank($value): bool
+    {
+        if (is_null($value)) {
+            return true;
+        }
+
+        if (is_string($value)) {
+            return trim($value) === '';
+        }
+
+        if (is_numeric($value) || is_bool($value)) {
+            return false;
+        }
+
+        if ($value instanceof Countable) {
+            return count($value) === 0;
+        }
+
+        return empty($value);
     }
 }

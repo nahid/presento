@@ -3,8 +3,6 @@
 namespace Nahid\Presento;
 
 
-use Countable;
-
 abstract class Presenter
 {
     protected $transformer = null;
@@ -87,7 +85,7 @@ abstract class Presenter
 
     protected function handleDefault($data)
     {
-        if (!$this->isBlank($data)) {
+        if (!blank($data)) {
             return $this->transform($this->process($data));
         }
 
@@ -179,26 +177,5 @@ abstract class Presenter
     public function get() : array
     {
         return $this->generatedData;
-    }
-
-    public function isBlank($value)
-    {
-        if (is_null($value)) {
-            return true;
-        }
-
-        if (is_string($value)) {
-            return trim($value) === '';
-        }
-
-        if (is_numeric($value) || is_bool($value)) {
-            return false;
-        }
-
-        if ($value instanceof Countable) {
-            return count($value) === 0;
-        }
-
-        return empty($value);
     }
 }
