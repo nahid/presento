@@ -23,34 +23,21 @@ if (!function_exists('to_camel_case')){
 if (!function_exists('get_from_array')) {
    function get_from_array($map, string $node)
     {
-        if ($map === null) {
+        if ($map === null || !is_array($map) || empty($node)) {
             return $map;
         }
 
-        if (!is_array($map)) {
-            return $map;
-        }
+        $path = explode('.', $node);
 
-        if (empty($node)) {
-            return $map;
-        }
-
-        if ($node) {
-            $terminate = false;
-            $path = explode('.', $node);
-            foreach ($path as $val) {
-                if (!array_key_exists($val, $map)) {
-                    $terminate = true;
-                    break;
-                }
-                $map = &$map[$val];
-            }
-            if ($terminate) {
+        foreach ($path as $val) {
+            if (!array_key_exists($val, $map)) {
                 return null;
             }
-            return $map;
+
+            $map = &$map[$val];
         }
-        return null;
+
+        return $map;
     }
 
 }
