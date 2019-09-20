@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace Nahid\Presento\Tests;
+
 use PHPUnit\Framework\TestCase;
 
 final class HelpersTest extends TestCase
