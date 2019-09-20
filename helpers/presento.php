@@ -13,13 +13,10 @@ if (!function_exists('to_camel_case')){
         if (empty($string)) return $string;
 
         $words = explode($delimiter, $string);
-        $camelCase = strtolower(array_shift($words)); //lowercase first word
 
-        foreach ($words as $word) {
-            $camelCase .= ucfirst(strtolower($word));
-        }
-
-        return $camelCase;
+        return join("", array_map(function($word) {
+            return ucfirst(strtolower($word));
+        }, $words));
     }
 }
 

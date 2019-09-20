@@ -11,11 +11,11 @@ final class HelpersTest extends TestCase
     {
         return [
             // [ 'actual data', 'expected data' ]
-            ["method", "method"],
-            ["double_word", "doubleWord"],
-            ["a_lot_of_words", "aLotOfWords"],
-            ["FIX_CAPITALIZATION", "fixCapitalization"],
-            ["this-should-work-too", "thisShouldWorkToo", "-"]
+            ["method", "Method"],
+            ["double_word", "DoubleWord"],
+            ["a_lot_of_words", "ALotOfWords"],
+            ["FIX_CAPITALIZATION", "FixCapitalization"],
+            ["this-should-work-too", "ThisShouldWorkToo", "-"]
         ];
     }
 
