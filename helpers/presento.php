@@ -10,16 +10,15 @@ if (!function_exists('to_camel_case')){
      */
     function to_camel_case(string $string, $delimiter = '_') : string
     {
+        if (empty($string)) return $string;
+
         $words = explode($delimiter, $string);
-        $camelCase = '';
-        $first = true;
+        $camelCase = strtolower(array_shift($words)); //lowercase first word
+
         foreach ($words as $word) {
-            if (!$first) {
-                $camelCase .= ucfirst(strtolower($word));
-            } else {
-                $camelCase .= strtolower($word);
-            }
+            $camelCase .= ucfirst(strtolower($word));
         }
+
         return $camelCase;
     }
 }
