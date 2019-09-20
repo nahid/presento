@@ -7,7 +7,8 @@
         "ext-json": "*"
     },
     "require-dev": {
-        "symfony/var-dumper": "4.4.x-dev"
+        "symfony/var-dumper": "4.4.x-dev",
+        "phpunit/phpunit": "^7"
     },
     "license": "MIT",
     "authors": [
@@ -28,5 +29,10 @@
         "exclude-from-classmap": [
             "/Tests/"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+          "Nahid\\Presento\\Tests\\": "tests/"
+        }
     }
 }
