@@ -7,9 +7,10 @@ use PHPUnit\Framework\TestCase;
 
 final class HelpersTest extends TestCase
 {
-    public function camelCaseDataProvider()
+    public function camelCaseDataProvider(): array
     {
         return [
+            // [ 'actual data', 'expected data' ]
             ["method", "method"],
             ["double_word", "doubleWord"],
             ["a_lot_of_words", "aLotOfWords"],
@@ -34,5 +35,27 @@ final class HelpersTest extends TestCase
         }
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function isCollectionDataProvider(): array
+    {
+        return [
+            // [ 'actual data', 'expected data' ]
+            ["scalar_data", false],
+            [[], false],
+            [[1, 2, 3], false],
+            [[ 'numbers' => [ 1, 2, 3], 'names' => [ "john", "Doe"]], true]
+        ];
+    }
+
+    /**
+     * @dataProvider isCollectionDataProvider
+     *
+     * @param mixed $data
+     * @param bool $expected
+     */
+    public function testIsCollectionMethod($data, bool $expected): void
+    {
+        $this->assertEquals($expected, is_collection($data));
     }
 }
