@@ -10,7 +10,7 @@ final class HelpersTest extends TestCase
     public function camelCaseDataProvider(): array
     {
         return [
-            // [ 'actual data', 'expected data' ]
+            // [ 'actual data', 'expected data', 'delimiter' (optional) ]
             ["method", "Method"],
             ["double_word", "DoubleWord"],
             ["a_lot_of_words", "ALotOfWords"],
@@ -57,5 +57,31 @@ final class HelpersTest extends TestCase
     public function testIsCollectionMethod($data, bool $expected): void
     {
         $this->assertEquals($expected, is_collection($data));
+    }
+
+    public function getFromArrayDataProvider(): array
+    {
+        return [
+            // [ 'actual data', 'path', 'expected data' ]
+            [["key" => "value"], "key", "value"],
+            [["key" => "value"], "", ["key" => "value"]],
+            [null, "invalid_path", null],
+            [["key" => [1, 2]], "key.1", 2],
+            [["key" => ["foo" => ["bar" => "value"]]], "key.bar.foo", null],
+            [["key" => ["foo" => ["bar" => "value"]]], "key.foo.bar", "value"],
+            [["key" => ["foo" => [["bar" => "value"]]]], "key.foo.0.bar", "value"],
+        ];
+    }
+
+    /**
+     * @dataProvider getFromArrayDataProvider
+     *
+     * @param mixed $data
+     * @param string $path
+     * @param mixed $expected
+     */
+    public function testGetFromArrayMethod($data, string $path, $expected): void
+    {
+        $this->assertEquals($expected, get_from_array($data, $path));
     }
 }
