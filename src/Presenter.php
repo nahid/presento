@@ -76,7 +76,6 @@ abstract class Presenter
             foreach ($this->data  as $property => $data) {
                 $generatedData[$property] = $this->handleDefault($this->convert($data));
             }
-
             return $generatedData;
         }
 
@@ -172,9 +171,8 @@ abstract class Presenter
     /**
      * get full set of data as array
      *
-     * @return array
      */
-    public function get() : array
+    public function get()
     {
         return $this->generatedData;
     }
