@@ -3,9 +3,15 @@
 namespace Nahid\Presento;
 
 
+use Nahid\Presento\Exceptions\BadPropertyTransformerMethodException;
+
 abstract class Transformer
 {
     protected $generatedData = [];
+    /**
+     * @var null | string
+     */
+    protected $propertyMethodTransform = 'to_camel_case';
     private $data = [];
 
     public function __construct(array $data)
@@ -49,10 +55,29 @@ abstract class Transformer
      *
      * @param string $property
      * @return string
+     * @throws BadPropertyTransformerMethodException
      */
     protected function getPropertyFunction(string $property) : string
     {
-        return 'get'. to_camel_case($property) . 'Property';
+        return 'get'. $this->propertyMethodTransform($property) . 'Property';
+    }
+
+    /**
+     * @param $property
+     * @return mixed
+     * @throws BadPropertyTransformerMethodException
+     */
+    protected function propertyMethodTransform($property)
+    {
+        if (!$this->propertyMethodTransform) {
+            return $property;
+        }
+
+        if(function_exists($this->propertyMethodTransform)) {
+            return call_user_func($this->propertyMethodTransform, $property);
+        }
+
+        throw new BadPropertyTransformerMethodException($this->propertyMethodTransform);
     }
 
     /**
