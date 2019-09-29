@@ -7,34 +7,35 @@ use PHPUnit\Framework\TestCase;
 
 final class PresenterTest extends TestCase
 {
+    public static $sampleData = [
+        "id" => 123456,
+        "name" => "Nahid Bin Azhar",
+        "email" => "talk@nahid.im",
+        "type" => 1,
+        "is_active" => 1,
+        "created_at" => "2018-01-02 02:03:04",
+        "updated_at" => "2018-01-02 02:03:04",
+        "deleted_at" => "2018-01-02 02:03:04",
+        "projects" => [
+            [
+                "id" => 1,
+                "name" => "Laravel Talk",
+                "url"   => "https://github.com/nahid/talk",
+                "license" => "CC0",
+                "created_at" => "2016-02-02 02:03:04"
+            ],
+            [
+                "id" => 2,
+                "name" => "JsonQ",
+                "url"   => "https://github.com/nahid/jsonq",
+                "license" => "MIT",
+                "created_at" => "2018-01-02 02:03:04"
+            ]
+        ]
+    ];
 
-    /**
-     * @var Presenter
-     */
-
-    protected function classInstance($data = null, $transformer = null, $present = [])
+    function arrayEqual(array $arr1, array $arr2): bool
     {
-        // Create a new instance from the Abstract Class
-        $presenter = new class($data, $transformer, $present) extends Presenter{
-            protected $_present;
-            // Just a sample public function that returns this anonymous instance
-            public function __construct($data, $transformer, $present)
-            {
-                $this->_present = $present;
-                parent::__construct($data, $transformer);
-            }
-            public function present() : array
-            {
-                return $this->_present;
-            }
-        };
-
-        $presenter->setPresent($data);
-
-        return $presenter;
-    }
-
-    function arrayEqual($arr1, $arr2) {
         foreach($arr1 as $k => $v) {
             if (!array_key_exists($k, $arr2)) {
                 return false;
@@ -59,37 +60,57 @@ final class PresenterTest extends TestCase
         return true;
     }
 
-
-    public function getWithoutTransformerDataProvider(): array
+    public function test_presenter_returns_only_selected_fields(): void
     {
-        return [
-            // ['data' 'presenter data, 'expected data']
-            [[],['name', 'email'], null],
-            [['id'=>1],['name', 'email'], ['name' => null, 'email' => null]],
-            [['id'=>1, 'name' => 'Alien'],['name', 'email'], ['name' => 'Alien', 'email' => null]],
-            [['id'=>1, 'name' => 'Alien', 'email' => 'alien@example.com'],['name', 'email'], ['name' => 'Alien', 'email' => 'alien@example.com']],
-            [['id'=>1, 'name' => 'Alien', 'emails' => ['alien@example.com']],['name', 'emails'], ['name' => 'Alien', 'emails' => ['alien@example.com']]],
-            [['id'=>1, 'name' => 'Alien', 'email' => 'alien@example.com'],['name', 'emails'], ['name' => 'Alien', 'emails' => null]],
+        $presenter = new TestSimplePresenterObject(static::$sampleData);
+        $expected = [
+            "id" => 123456,
+            "name" => "Nahid Bin Azhar",
+            "email" => "talk@nahid.im",
+            "type" => 1,
+            "is_active" => 1,
         ];
+
+        $this->assertTrue($this->arrayEqual($presenter->get(), $expected));
     }
 
-    /**
-     * @dataProvider getWithoutTransformerDataProvider
-     *
-     * @param mixed $data
-     * @param array $present
-     * @param mixed $expected
-     * @return bool
-     */
-    public function testGetWithoutTransformerMethod($data, array $present, $expected): bool
+    public function test_presenter_returns_non_exists_fields_value_null(): void
     {
-        $presenter = $this->classInstance($data, null, $present);
-        $actual = $presenter->get();
-        if (is_null($expected)) {
-            $this->assertEquals($actual, $expected);
-            return true;
-        }
+        $data = [
+          'id' => 1
+        ];
+
+        $presenter = new TestPresenterWithNonExistsFieldsObject($data);
+        $expected = [
+            "name" => null,
+            "email" => null
+        ];
+
         $this->assertTrue($this->arrayEqual($presenter->get(), $expected));
-        return true;
+    }
+}
+
+class TestSimplePresenterObject extends Presenter
+{
+    public function present() : array
+    {
+        return [
+            'id',
+            'name',
+            'email',
+            'type',
+            'is_active'
+        ];
+    }
+}
+
+class TestPresenterWithNonExistsFieldsObject extends Presenter
+{
+    public function present() : array
+    {
+        return [
+            'name',
+            'email'
+        ];
     }
 }
