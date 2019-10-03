@@ -59,7 +59,7 @@ abstract class Transformer
      */
     protected function getPropertyFunction(string $property) : string
     {
-        return 'get'. $this->propertyMethodTransform($property) . 'Property';
+        return sprintf('get%sProperty', $this->propertyMethodTransform($property));
     }
 
     /**
