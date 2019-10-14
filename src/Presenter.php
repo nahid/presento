@@ -174,6 +174,6 @@ abstract class Presenter
      */
     public function get()
     {
-        return $this->generatedData;
+        return $this->generatedData ?? [];
     }
 }
