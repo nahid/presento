@@ -5,11 +5,35 @@ namespace Nahid\Presento;
 
 abstract class Presenter
 {
+    /**
+     * @var string|null
+     */
     protected $transformer = null;
+
+    /**
+     * @var array|mixed
+     */
     protected $data = [];
+
+    /**
+     * @var array
+     */
     protected $generatedData = [];
+
+    /**
+     * @var null
+     */
     protected $default = null;
+
+    /**
+     * @var array
+     */
     protected $presentScheme;
+
+    /**
+     * @var bool
+     * @since v1.1
+     */
     protected $isProcessed = false;
 
     public function __construct($data = null, string $transformer = null)
@@ -33,6 +57,10 @@ abstract class Presenter
         return json_encode($this->generatedData);
     }
 
+    /**
+     * @param array $present
+     * @return $this
+     */
     public function setPresent(array $present)
     {
         $this->presentScheme = $present;
@@ -40,17 +68,29 @@ abstract class Presenter
     }
 
 
+    /**
+     * @param string $transformer
+     * @return $this
+     */
     public function setTransformer(string $transformer)
     {
         $this->transformer = $transformer;
         return $this;
     }
 
+    /**
+     * @return array
+     * @since v1.1
+     */
     public function getPresent() : array
     {
         return $this->presentScheme;
     }
 
+    /**
+     * @return string|null
+     * @since v1.1
+     */
     public function getTransformer()
     {
         return $this->transformer;
@@ -68,6 +108,11 @@ abstract class Presenter
         return null;
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     * @since v1.1
+     */
     public function init($data)
     {
         return $this->convert($data);
