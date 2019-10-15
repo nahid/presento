@@ -10,23 +10,22 @@ abstract class Presenter
     protected $generatedData = [];
     protected $default = null;
     protected $presentScheme;
+    protected $isProcessed = false;
 
     public function __construct($data = null, string $transformer = null)
     {
         $this->presentScheme = $this->present();
-        $this->data = $this->convert($data);
+        $this->data = $this->init($data);
 
         $this->transformer = $this->transformer();
         if (!is_null($transformer)) {
             $this->transformer = $transformer;
         }
-
-        $this->generatedData = $this->handle();
     }
 
     public function __invoke()
     {
-        return $this->generatedData;
+        return $this->get();
     }
 
     public function __toString() : string
@@ -47,6 +46,16 @@ abstract class Presenter
         return $this;
     }
 
+    public function getPresent() : array
+    {
+        return $this->presentScheme;
+    }
+
+    public function getTransformer()
+    {
+        return $this->transformer;
+    }
+
     abstract public function present() : array;
 
     /**
@@ -59,6 +68,17 @@ abstract class Presenter
         return null;
     }
 
+    public function init($data)
+    {
+        return $this->convert($data);
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     *
+     * @deprecated 1.1.0
+     */
     public function convert($data)
     {
         return $data;
@@ -71,6 +91,8 @@ abstract class Presenter
      */
     public function handle()
     {
+        $this->isProcessed = true;
+
         if (is_collection($this->data)) {
             $generatedData = [];
             foreach ($this->data  as $property => $data) {
@@ -165,7 +187,7 @@ abstract class Presenter
      */
     public function toJson() : string
     {
-        return json_encode($this->generatedData);
+        return json_encode($this->get());
     }
 
     /**
@@ -174,6 +196,10 @@ abstract class Presenter
      */
     public function get()
     {
+        if (!$this->isProcessed) {
+            $this->generatedData = $this->handle();
+        }
+
         return $this->generatedData;
     }
 }
