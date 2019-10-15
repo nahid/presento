@@ -130,6 +130,16 @@ abstract class Presenter
     }
 
     /**
+     *
+     * @param $data
+     * @return mixed
+     */
+    public function map($data)
+    {
+        return $data;
+    }
+
+    /**
      * handle data based on presented data
      *
      * @return array
@@ -141,12 +151,12 @@ abstract class Presenter
         if (is_collection($this->data)) {
             $generatedData = [];
             foreach ($this->data  as $property => $data) {
-                $generatedData[$property] = $this->handleDefault($this->convert($data));
+                $generatedData[$property] = $this->handleDefault($this->map($data));
             }
             return $generatedData;
         }
 
-        return $this->handleDefault($this->convert($this->data));
+        return $this->handleDefault($this->map($this->data));
     }
 
     protected function handleDefault($data)
