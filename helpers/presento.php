@@ -31,7 +31,7 @@ if (!function_exists('get_from_array')) {
      */
     function get_from_array($map, string $node)
     {
-        if ($map === null || !is_array($map) || empty($node)) {
+        if ($map === null || !is_array($map) || empty($node) || $node == '.') {
             return $map;
         }
 
