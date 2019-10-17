@@ -43,6 +43,8 @@ if (!function_exists('get_from_array')) {
             $terminate = false;
             $path = explode('.', $node);
             foreach ($path as $val) {
+                if (!is_array($map)) return $map;
+
                 if (!array_key_exists($val, $map)) {
                     $terminate = true;
                     break;
