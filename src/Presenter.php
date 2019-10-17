@@ -178,6 +178,9 @@ abstract class Presenter
      */
     public function get() : array
     {
+        if (count($this->generatedData) == 0) {
+            $this->generatedData = $this->handle();
+        }
         return $this->generatedData;
     }
 
