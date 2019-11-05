@@ -53,19 +53,14 @@ if (!function_exists('is_collection')) {
     /**
      * Check given value is multidimensional array
      *
-     * @param mixed $arr
+     * @param mixed $array
      * @return bool
      */
-    function is_collection($arr) : bool
+    function is_collection($array) : bool
     {
-        if (!is_array($arr)) {
-            return false;
-        }
+        if (!is_array($array)) return false;
 
-        $first = reset($arr);
-        //$key = key($first);
-
-        return isset($first) && is_array($first);
+        return array_keys($array) === range(0, count($array) - 1);
     }
 }
 
