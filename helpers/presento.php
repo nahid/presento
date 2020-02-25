@@ -1,23 +1,33 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types = 1);
+
+if (!function_exists('to_studly_case')) {
+    /**
+     * Make given text as camelCase
+     *
+     * @param string $string
+     * @return string
+     */
+    function to_studly_case(string $string) : string
+    {
+        if (empty($string)) return $string;
+
+        $words = str_replace(['-', '_', '.'], ' ', $string);
+        $words = ucwords($words);
+
+        return str_replace(' ', '', $words);
+    }
+}
 
 if (!function_exists('to_camel_case')) {
     /**
      * Make given text as camelCase
      *
      * @param string $string
-     * @param string $delimiter
      * @return string
      */
-    function to_camel_case(string $string, $delimiter = '_') : string
+    function to_camel_case(string $string) : string
     {
-        if (empty($string)) return $string;
-
-        $words = explode($delimiter, $string);
-
-        return join("", array_map(function($word) {
-            return ucfirst(strtolower($word));
-        }, $words));
+        return lcfirst(to_studly_case($string));
     }
 }
 

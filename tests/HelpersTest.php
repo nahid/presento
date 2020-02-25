@@ -25,13 +25,11 @@ final class HelpersTest extends TestCase
      * @param string $expected
      * @param string|null $delimiter
      */
-    public function testToCamelCaseMethod(string $string, string $expected, string $delimiter=null): void
+    public function testToCamelCaseMethod(string $string, string $expected): void
     {
-        if ($delimiter) {
-            $actual = to_camel_case($string, $delimiter);
-        } else {
-            $actual = to_camel_case($string);
-        }
+
+        $actual = to_studly_case($string);
+
 
         $this->assertEquals($expected, $actual);
     }

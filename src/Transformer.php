@@ -11,7 +11,7 @@ abstract class Transformer
     /**
      * @var null | string
      */
-    protected $propertyMethodTransform = 'to_camel_case';
+    protected $propertyMethodTransform = 'to_studly_case';
     private $data = [];
 
     public function __construct(array $data)
