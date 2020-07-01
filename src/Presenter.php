@@ -96,6 +96,13 @@ abstract class Presenter
         return $this->transformer;
     }
 
+    public function setDefault($value) : self
+    {
+        $this->default = $value;
+
+        return $this;
+    }
+
     abstract public function present() : array;
 
     /**
