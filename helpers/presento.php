@@ -37,15 +37,16 @@ if (!function_exists('get_from_array')) {
      *
      * @param $map
      * @param string $node
+     * @param string $nodeTraveler
      * @return mixed|null
      */
-    function get_from_array($map, string $node)
+    function get_from_array($map, string $node, $nodeTraveler = '.')
     {
-        if ($map === null || !is_array($map) || empty($node) || $node == '.') {
+        if ($map === null || !is_array($map) || empty($node) || $node == $nodeTraveler) {
             return $map;
         }
 
-        $path = explode('.', $node);
+        $path = explode($nodeTraveler, $node);
 
         foreach ($path as $val) {
             if (!is_array($map)) {

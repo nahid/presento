@@ -36,8 +36,14 @@ abstract class Presenter
      */
     protected $isProcessed = false;
 
-    public function __construct($data = null, string $transformer = null)
+    /**
+     * @var string
+     */
+    protected $traveler;
+
+    public function __construct($data = null, string $transformer = null, $nodeTraveler = '.')
     {
+        $this->traveler = $nodeTraveler;
         $this->presentScheme = $this->present();
         $this->data = $this->init($data);
 
@@ -46,6 +52,8 @@ abstract class Presenter
             $this->transformer = $transformer;
         }
     }
+
+    abstract public function present() : array;
 
     public function __invoke()
     {
@@ -103,7 +111,17 @@ abstract class Presenter
         return $this;
     }
 
-    abstract public function present() : array;
+    public function setNodeTraveler(string $traveler) : self
+    {
+        $this->traveler = $traveler;
+
+        return $this;
+    }
+
+    public function getNodeTraveler() : string
+    {
+        return $this->traveler;
+    }
 
     /**
      * get transformer name, this method can be override
@@ -205,7 +223,7 @@ abstract class Presenter
                 $params = $value[$class];
                 $arrData = array_shift($params) ?? '.';
                 $transformer = array_shift($params);
-                $args = [get_from_array($data, $arrData), $transformer] + $params;
+                $args = [get_from_array($data, $arrData, $this->getNodeTraveler()), $transformer] + $params;
 
                 $presenter = new $class(... $args);
                 $newVal = $value;
@@ -215,7 +233,7 @@ abstract class Presenter
 
                 $record[$key] = $newVal;
             } else {
-                $record[$key] = $value ? get_from_array($data, $value) : $value;
+                $record[$key] = $value ? get_from_array($data, $value, $this->getNodeTraveler()) : $value;
             }
         }
 
@@ -237,7 +255,7 @@ abstract class Presenter
         $transformerClass = $this->transformer;
 
         if (!is_null($transformerClass)) {
-            $transformer = new $transformerClass($data);
+            $transformer = new $transformerClass($data, $this->getNodeTraveler());
             return $transformer();
         }
 

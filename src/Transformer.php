@@ -11,11 +11,16 @@ abstract class Transformer
     /**
      * @var null | string
      */
-    protected $propertyMethodTransform = 'to_studly_case';
+    protected $propertyMethodTransformAs = 'to_studly_case';
     private $data = [];
+    /**
+     * @var string
+     */
+    protected $traveler;
 
-    public function __construct(array $data)
+    public function __construct(array $data, string $nodeTraveler = '.')
     {
+        $this->traveler = $nodeTraveler;
         $this->data = $data;
         $this->transform();
     }
@@ -69,15 +74,15 @@ abstract class Transformer
      */
     protected function propertyMethodTransform($property)
     {
-        if (!$this->propertyMethodTransform) {
-            return $property;
+        if (!$this->propertyMethodTransformAs) {
+            return ucfirst($property);
         }
 
-        if(function_exists($this->propertyMethodTransform)) {
-            return call_user_func($this->propertyMethodTransform, $property);
+        if(function_exists($this->propertyMethodTransformAs)) {
+            return call_user_func($this->propertyMethodTransformAs, $property);
         }
 
-        throw new BadPropertyTransformerMethodException($this->propertyMethodTransform);
+        throw new BadPropertyTransformerMethodException($this->propertyMethodTransformAs);
     }
 
     /**
@@ -104,7 +109,7 @@ abstract class Transformer
      */
     public function getProperty(string $property)
     {
-        return get_from_array($this->data, $property);
+        return get_from_array($this->data, $property, $this->traveler);
     }
 
     /**
